@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Agent</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a1a1a;
+            color: #ffffff;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #00aaff;
+        }
+
+        #chat-box {
+            width: 700px;
+            height: 500px;
+            background: #2a2a2a;
+            border-radius: 10px;
+            padding: 20px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 10px 15px;
+            border-radius: 8px;
+            max-width: 80%;
+            line-height: 1.5;
+        }
+
+        .user {
+            background: #00aaff;
+            margin-left: auto;
+            text-align: right;
+        }
+
+        .ai {
+            background: #3a3a3a;
+            margin-right: auto;
+        }
+
+        .status {
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 5px;
+        }
+
+        #input-area {
+            display: flex;
+            width: 700px;
+            gap: 10px;
+        }
+
+        #user-input {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            background: #2a2a2a;
+            color: white;
+            font-size: 16px;
+            outline: none;
+        }
+
+        #send-btn {
+            padding: 12px 24px;
+            background: #00aaff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #send-btn:hover {
+            background: #0088cc;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🤖 AI Agent</h1>
+
+    <div id="chat-box"></div>
+
+    <div id="input-area">
+        <input type="text" id="user-input" placeholder="Ask me anything..." />
+        <button id="send-btn">Send</button>
+    </div>
+
+    <script>
+        const chatBox = document.getElementById("chat-box");
+        const userInput = document.getElementById("user-input");
+        const sendBtn = document.getElementById("send-btn");
+
+        function addMessage(text, sender, status = "") {
+            const div = document.createElement("div");
+            div.className = `message ${sender}`;
+
+            if (status) {
+                const statusDiv = document.createElement("div");
+                statusDiv.className = "status";
+                statusDiv.textContent = status;
+                div.appendChild(statusDiv);
+            }
+
+            const textDiv = document.createElement("div");
+            textDiv.textContent = text;
+            div.appendChild(textDiv);
+
+            chatBox.appendChild(div);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        async function sendMessage() {
+            const message = userInput.value.trim();
+            if (!message) return;
+
+            addMessage(message, "user");
+            userInput.value = "";
+            sendBtn.disabled = true;
+            sendBtn.textContent = "Thinking...";
+
+            const response = await fetch("/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message })
+            });
+
+            const data = await response.json();
+            const status = data.searched ? "🔍 Searched the web" : "🧠 From memory";
+            addMessage(data.reply, "ai", status);
+
+            sendBtn.disabled = false;
+            sendBtn.textContent = "Send";
+        }
+
+        sendBtn.addEventListener("click", sendMessage);
+
+        userInput.addEventListener("keypress", function(e) {
+            if (e.key === "Enter") sendMessage();
+        });
+    </script>
+
+</body>
+</html>
