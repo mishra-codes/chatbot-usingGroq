@@ -1,5 +1,7 @@
 # AI Agent 
 
+![AI Agent Screenshot](AgentScreenshot.png)
+
 Built this to understand how AI agents actually work under the hood.
 Turns out you can get a working AI agent running in under 100 lines of Python.
 
