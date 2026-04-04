@@ -1,51 +1,70 @@
-# AI Agent with Web Search
+# AI Agent 
 
-I was genuinely surprised that you can build a working AI agent 
-in under 100 lines of Python. No fancy frameworks. No complex setup.
-Just API calls, a while loop, and one tricky JSON structure.
+![AI Agent Screenshot](AgentScreenshot.png)
 
-This is a terminal-based AI agent that searches the web in real time
-and decides on its own when to search vs when to answer from memory.
+Built this to understand how AI agents actually work under the hood.
+Turns out you can get a working AI agent running in under 100 lines of Python.
 
-## What it does
+The agent decides on its own when to search the web vs answer from memory.
+That's the same concept behind Perplexity and ChatGPT's browsing feature.
+
+## How it works
+
+User asks a question
+        ↓
+AI thinks — do I need to search?
+        ↓
+YES → searches web → reads results → answers with sources
+NO  → answers instantly from memory
+
+## Features
 
 - Answers simple questions instantly from memory
-- Searches the web automatically for anything current or recent
-- Remembers the full conversation across messages
-- Tells you whether it searched or used memory
+- Searches the web automatically for current/recent info
+- Remembers full conversation context
+- Clean web interface built with Flask
+- Powered by Groq (fast, free inference)
 
-## The part that clicked everything
+## Project Structure
 
-Tool use. You describe a function to the AI in plain English using JSON,
-and the AI figures out on its own when to call it. That's it.
-That's how Perplexity works. That's how ChatGPT browses the web.
-
-Getting that JSON structure right was honestly the hardest part of this 
-project — one wrong key and the whole thing breaks silently.
-When it finally ran and I saw "AI decided to search" for the first time,
-that was a genuine sense of achievement.
+chatbot.py        → v1 terminal chatbot
+app.py            → v2 flask web interface
+templates/
+└── index.html    → chat UI
 
 ## Stack
 
-- Groq API — llama-3.3-70b-versatile
+- Groq API — moonshotai/kimi-k2-instruct
 - Tavily — real time web search built for AI
+- Flask — lightweight Python web framework
 - Python 3.12
 
-## Run it yourself
+## The hardest part
 
-git clone https://github.com/mishra-codes/AI-Agent.git
-cd chatbot
-python -m venv .venv
-.venv\Scripts\activate
-pip install groq tavily-python python-dotenv
+Describing the search tool to the AI using JSON so it knows
+when to call it. One wrong key and it breaks silently.
+Took a while to debug — but that's where the real learning happened.
 
-Create a .env file:
-GROQ_API_KEY=your_key
-TAVILY_API_KEY=your_key
-
+### Terminal version
+```bash
 python chatbot.py
+```
+
+### Web version
+```bash
+python app.py
+```
+Then open `http://127.0.0.1:8080`
+
+## What I learned
+
+- How LLM tool use works under the hood
+- Managing conversation history manually
+- Integrating multiple APIs in one project
+- Secure API key handling with .env
+- Wrapping AI logic in a Flask web app
 
 ## Built by
 
-Ayush Mishra — 2nd year CS student building toward AI engineering
-github.com/mishra-codes
+Ayush Mishra — 2nd year CS student building toward AI engineering  
+github.com/mishra-codes | linkedin.com/in/dev-ayushmishra
